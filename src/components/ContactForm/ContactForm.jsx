@@ -1,37 +1,37 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactSlice';
 import { getContacts } from 'redux/selector';
 import { useState } from 'react';
 import Notiflix from 'notiflix';
 import styles from './ContactForm.module.css';
+import { addContact } from '../../redux/contactSlice';
 
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const contontacts = useSelector(getContacts);
-
+  const contacts = useSelector(getContacts);
+  const filter = contacts.items;
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setPhone] = useState('');
   const handleChange = evt => {
     const { name, value } = evt.target;
-    name === 'name' ? setName(value) : setNumber(value);
+    name === 'name' ? setName(value) : setPhone(value);
   };
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    const isContactExist = contontacts.find(
+    const isContactExist = filter.find(
       contact =>
         contact.name.toLowerCase() === name.toLowerCase() ||
-        contact.number === number
+        contact.phone === phone
     );
     if (isContactExist) {
-      Notiflix.Notify.failure(`${name} ${number} is already in contacts`);
+      Notiflix.Notify.failure(`${name} ${phone} is already in contacts`);
       setName('');
-      setNumber('');
+      setPhone('');
       return;
     }
-    dispatch(addContact(name, number));
+    dispatch(addContact({ name, phone }));
     setName('');
-    setNumber('');
+    setPhone('');
   };
 
   return (
@@ -49,10 +49,10 @@ export const ContactForm = () => {
       </label>
       <label className={styles.label}>
         <input
-          value={number}
+          value={phone}
           onChange={handleChange}
           type="tel"
-          name="number"
+          name="phone"
           required
           className={styles.input}
           placeholder="Enter phone number"

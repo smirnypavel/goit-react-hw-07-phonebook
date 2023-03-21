@@ -8,31 +8,34 @@ import styled from './ContactList.module.css';
 
 const ContactList = () => {
   const contontacts = useSelector(getContacts);
+  const response = contontacts.items;
   const Filter = useSelector(getFilter);
   const dispatch = useDispatch();
-  const handleDelete = id => dispatch(deleteContact(id));
-  const visibleContacts = contontacts.filter(contact =>
+  const handleDeleteContact = id => {
+    dispatch(deleteContact(id));
+  };
+  const visibleContacts = response.filter(contact =>
     contact.name.toLowerCase().includes(Filter.toLowerCase())
   );
-
   return (
     <ul className={styled.ul}>
-      {visibleContacts.map(({ id, name, number }) => (
-        <li key={id} className={styled.li}>
-          <>
-            {name}
-            <br />
-            {number}
-          </>
-          <button
-            type="button"
-            onClick={() => handleDelete(id)}
-            className={styled.button}
-          >
-            <TrashIcon />
-          </button>
-        </li>
-      ))}
+      {response.length > 0 &&
+        visibleContacts.map(item => (
+          <li key={item.id} className={styled.li}>
+            <>
+              {item.name}
+              <br />
+              {item.phone}
+            </>
+            <button
+              type="button"
+              onClick={() => handleDeleteContact(item.id)}
+              className={styled.button}
+            >
+              <TrashIcon />
+            </button>
+          </li>
+        ))}
     </ul>
   );
 };
