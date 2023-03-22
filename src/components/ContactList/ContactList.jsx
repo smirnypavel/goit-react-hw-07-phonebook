@@ -6,8 +6,11 @@ import { getContacts, getFilter } from 'redux/selector';
 import { TbTrash as TrashIcon } from 'react-icons/tb';
 import styled from './ContactList.module.css';
 
+import { Loader } from '../Loader/loader';
+
 const ContactList = () => {
   const contontacts = useSelector(getContacts);
+  const loader = contontacts.loading;
   const response = contontacts.items;
   const Filter = useSelector(getFilter);
   const dispatch = useDispatch();
@@ -19,6 +22,7 @@ const ContactList = () => {
   );
   return (
     <ul className={styled.ul}>
+      {loader === 'loading' && <Loader />}
       {response.length > 0 &&
         visibleContacts.map(item => (
           <li key={item.id} className={styled.li}>
